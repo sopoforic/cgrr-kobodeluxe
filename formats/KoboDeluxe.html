@@ -1,0 +1,129 @@
+<html>
+<head>
+<title>{{ title }}</title>
+<style type="text/css">
+  table {
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 1px;
+    border-color: #666666;
+    border-collapse: collapse;
+  }
+  table th {
+    border-width: 1px;
+    padding: 5px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #dedede;
+  }
+  table td {
+    border-width: 1px;
+    padding: 3px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #ffffff;
+  }
+</style>
+</head>
+<body>
+<table>
+    <tr>
+        <th>Key</th>
+        <td>{{ key }}</td>
+    </tr>
+    <tr>
+        <th>Title</th>
+        <td>{{ title }}</td>
+    </tr>
+    <tr>
+        <th>Developer</th>
+        <td>{{ developer }}</td>
+    </tr>
+    <tr>
+        <th>Description</th>
+        <td>{{ description }}</td>
+    </tr>
+</table>
+
+{% for (start, prof, scores) in profiles %}
+<h1>Profile: {{ start.name }}</h1>
+
+<h2>Start</h2>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <td>{{ start.name }}</td>
+    </tr>
+    <tr>
+        <th>Best Score</th>
+        <td>{{ start.best_score }}</td>
+    </tr>
+    <tr>
+        <th>Last Scene</th>
+        <td>{{ start.last_scene }}</td>
+    </tr>
+</table>
+
+<h2>Profile</h2>
+
+<table>
+    <tr>
+        <th>Version</th>
+        <td>{{ prof.version }}</td>
+    </tr>
+    <tr>
+        <th>Skill</th>
+        <td>{{ prof.skill }}</td>
+    </tr>
+    <tr>
+        <th>Handicap</th>
+        <td>{{ prof.handicap }}</td>
+    </tr>
+    <tr>
+        <th>Color 1</th>
+        <td>{{ prof.color1 }}</td>
+    </tr>
+        <th>Color 2</th>
+        <td>{{ prof.color2 }}</td>
+    </tr>
+</table>
+
+<h2>Scores</h2>
+
+<table>
+    <tr>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Skill</th>
+        <th>Game Type</th>
+        <th>Score</th>
+        <th>Start Scene</th>
+        <th>End Scene</th>
+        <th>End Lives</th>
+        <th>End Health</th>
+        <th>Play Time</th>
+        <th>Saves</th>
+        <th>Loads</th>
+    </tr>
+    {% for score in scores %}
+    <tr>
+        <td>{{ score.start_date }}</td>
+        <td>{{ score.end_date }}</td>
+        <td>{{ score.skill }}</td>
+        <td>{{ score.gametype }}</td>
+        <td>{{ score.score }}</td>
+        <td>{{ score.start_scene }}</td>
+        <td>{{ score.end_scene }}</td>
+        <td>{{ score.end_lives }}</td>
+        <td>{{ score.end_health }}</td>
+        <td>{{ score.playtime }}</td>
+        <td>{{ score.saves }}</td>
+        <td>{{ score.loads }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endfor %}
+</body>
+</html>
