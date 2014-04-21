@@ -39,42 +39,54 @@ class KoboDeluxe(yapsy.IPlugin.IPlugin):
         File("kobodl.exe", 510976,  "c0f6b8ad7563bd0d9e54872778c69104"),
     ]
     
-    start_reader = FileReader([
-        ("best_score", "I"),
-        ("last_scene", "i"),
-        ("name", "64s"),
+    start_reader = FileReader(
+        format = [
+            ("best_score", "I"),
+            ("last_scene", "i"),
+            ("name", "64s"),
         ],
-        massage_in = { "name" : (lambda s: s.decode('ascii').strip('\x00')) },
-        massage_out = { "name" : (lambda s: s.encode('ascii')) },
-        byte_order = "<")
+        massage_in = {
+            "name" : (lambda s: s.decode('ascii').strip('\x00'))
+        },
+        massage_out = {
+            "name" : (lambda s: s.encode('ascii'))
+        },
+        byte_order = "<"
+    )
 
-    prof_reader = FileReader([
-        ("profile_chunk_header", "4s"), # PROF
-        ("profile_chunk_length", "I"),  # 20 (14h)
-        ("version", "I"),
-        ("skill", "i"),
-        ("handicap", "i"),              # 0 == none
-        ("color1", "i"),                # -1 == default
-        ("color2", "i"),                # -1 == default
-        ], byte_order="<")
+    prof_reader = FileReader(
+        format = [
+            ("profile_chunk_header", "4s"), # PROF
+            ("profile_chunk_length", "I"),  # 20 (14h)
+            ("version", "I"),
+            ("skill", "i"),
+            ("handicap", "i"),              # 0 == none
+            ("color1", "i"),                # -1 == default
+            ("color2", "i"),                # -1 == default
+        ],
+        byte_order="<"
+    )
 
     # For values below, -1 (signed) or 0 (unsigned) mean "unknown"
-    hiscore_reader = FileReader([
-        ("hiscore_chunk_header", "4s"), # HISC
-        ("hiscore_chunk_length", "I"),  # 48 (30h)
-        ("start_date", "I"),
-        ("end_date", "I"),
-        ("skill", "i"),
-        ("score", "I"),
-        ("start_scene", "i"),
-        ("end_scene", "i"),
-        ("end_lives", "i"),
-        ("end_health", "i"),
-        ("playtime", "I"),
-        ("saves", "i"),
-        ("loads", "i"),
-        ("gametype", "i"),
-        ], byte_order="<")
+    hiscore_reader = FileReader(
+        format = [
+            ("hiscore_chunk_header", "4s"), # HISC
+            ("hiscore_chunk_length", "I"),  # 48 (30h)
+            ("start_date", "I"),
+            ("end_date", "I"),
+            ("skill", "i"),
+            ("score", "I"),
+            ("start_scene", "i"),
+            ("end_scene", "i"),
+            ("end_lives", "i"),
+            ("end_health", "i"),
+            ("playtime", "I"),
+            ("saves", "i"),
+            ("loads", "i"),
+            ("gametype", "i"),
+        ],
+        byte_order="<"
+    )
 
     @staticmethod
     def export(path, format="html"):
