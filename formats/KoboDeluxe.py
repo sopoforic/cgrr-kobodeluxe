@@ -43,7 +43,10 @@ class KoboDeluxe(yapsy.IPlugin.IPlugin):
         ("best_score", "I"),
         ("last_scene", "i"),
         ("name", "64s"),
-        ], byte_order="<")
+        ],
+        massage_in = { "name" : (lambda s: s.decode('ascii').strip('\x00')) },
+        massage_out = { "name" : (lambda s: s.encode('ascii')) },
+        byte_order = "<")
 
     prof_reader = FileReader([
         ("profile_chunk_header", "4s"), # PROF
