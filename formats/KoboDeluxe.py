@@ -44,17 +44,22 @@ class KoboDeluxe(yapsy.IPlugin.IPlugin):
         """Return a list of decoded scores from the hiscore chunk scoredata."""
         n = KoboDeluxe.hiscore_reader.struct.size
         scores = [scoredata[i:i+n] for i in range(0, len(scoredata), n)]
-        return map(KoboDeluxe.hiscore_reader.unpack, scores)
+        return list(map(KoboDeluxe.hiscore_reader.unpack, scores))
 
     @staticmethod
     def write_all_scores(scores):
         return b''.join(map(KoboDeluxe.hiscore_reader.pack, scores))
 
     @staticmethod
-    def get_profile_reader(profile):
-        score_size = (os.fstat(profile.fileno()).st_size
-                               - KoboDeluxe.start_reader.struct.size
-                               - KoboDeluxe.prof_reader.struct.size)
+    def get_profile_reader(profile_file=None, profile_data=None):
+        if not (profile_file or profile_data) or (profile_file and profile_data):
+            raise ValueError("Must provide exactly one of profile_file or profile_data.")
+        if profile_file:
+            score_size = (os.fstat(profile_file.fileno()).st_size
+                                   - KoboDeluxe.start_reader.struct.size
+                                   - KoboDeluxe.prof_reader.struct.size)
+        else:
+            score_size = KoboDeluxe.hiscore_reader.struct.size * len(profile_data['score_chunk'])
         return FileReader(
             format = [
                 ("start_chunk", "{}s".format(KoboDeluxe.start_reader.struct.size)),
@@ -154,3 +159,9 @@ class KoboDeluxe(yapsy.IPlugin.IPlugin):
                 profile_reader = KoboDeluxe.get_profile_reader(profile)
                 answer.append(profile_reader.unpack(profile.read()))
         return answer
+
+    @staticmethod
+    def write_profile(profile):
+        """Return a bytestring representation of profile."""
+        profile_reader = KoboDeluxe.get_profile_reader(profile_data=profile)
+        return profile_reader.pack(profile)

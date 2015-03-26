@@ -42,7 +42,8 @@ class Test_kobo_deluxe_a(unittest.TestCase):
         with open(self.test_profile_path, "rb") as pfile:
             profile_reader = self.plugin.get_profile_reader(pfile)
             profile = profile_reader.unpack(pfile.read())
-        packed = profile_reader.pack(profile)
+        packed = self.plugin.write_profile(profile)
+
         self.assertEqual(packed, self.original_profile,
             "roundtripped data differs from original")
 
