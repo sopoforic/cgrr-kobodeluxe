@@ -52,6 +52,12 @@ class KoboDeluxe(yapsy.IPlugin.IPlugin):
 
     @staticmethod
     def get_profile_reader(profile_file=None, profile_data=None):
+        """Return a FileReader suited to the profile passed in.
+
+        If profle_file is passed, it should be an open profile file. If
+        profile_data is passed, it should be an unpacked profile.
+        
+        """
         if not (profile_file or profile_data) or (profile_file and profile_data):
             raise ValueError("Must provide exactly one of profile_file or profile_data.")
         if profile_file:
