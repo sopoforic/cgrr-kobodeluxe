@@ -38,7 +38,42 @@ class KoboDeluxe(yapsy.IPlugin.IPlugin):
     identifying_files = [
         File("kobodl.exe", 510976,  "c0f6b8ad7563bd0d9e54872778c69104"),
     ]
-    
+
+    @staticmethod
+    def read_all_scores(scoredata):
+        """Return a list of decoded scores from the hiscore chunk scoredata."""
+        n = KoboDeluxe.hiscore_reader.struct.size
+        scores = [scoredata[i:i+n] for i in range(0, len(scoredata), n)]
+        return map(KoboDeluxe.hiscore_reader.unpack, scores)
+
+    @staticmethod
+    def write_all_scores(scores):
+        return b''.join(map(KoboDeluxe.hiscore_reader.pack, scores))
+
+    @staticmethod
+    def get_profile_reader(profile):
+        score_size = (os.fstat(profile.fileno()).st_size
+                               - KoboDeluxe.start_reader.struct.size
+                               - KoboDeluxe.prof_reader.struct.size)
+        return FileReader(
+            format = [
+                ("start_chunk", "{}s".format(KoboDeluxe.start_reader.struct.size)),
+                ("prof_chunk", "{}s".format(KoboDeluxe.prof_reader.struct.size)),
+                ("score_chunk", "{}s".format(score_size)),
+            ],
+            massage_in = {
+                "start_chunk" : (KoboDeluxe.start_reader.unpack),
+                "prof_chunk" : (KoboDeluxe.prof_reader.unpack),
+                "score_chunk" : (KoboDeluxe.read_all_scores),
+            },
+            massage_out = {
+                "start_chunk" : (KoboDeluxe.start_reader.pack),
+                "prof_chunk" : (KoboDeluxe.prof_reader.pack),
+                "score_chunk" : (KoboDeluxe.write_all_scores),
+            },
+            byte_order = "<"
+        )
+
     start_reader = FileReader(
         format = [
             ("best_score", "I"),
@@ -90,14 +125,11 @@ class KoboDeluxe(yapsy.IPlugin.IPlugin):
 
     @staticmethod
     def export(path, format="html"):
-        """Exports everything this class supports."""
-        # fixme: can't verify in here
-        # if not cls.verify(path):
-        #     raise Exception
+        """Export a report of  everything this class supports."""
         global env
         if format == "html":
             template = env.get_template('KoboDeluxe.html')
-        profiles = KoboDeluxe.read_profile(path)
+        profiles = KoboDeluxe.read_profiles(path)
         text = template.render({
             "key" : KoboDeluxe.key,
             "title" : KoboDeluxe.title,
@@ -113,18 +145,12 @@ class KoboDeluxe(yapsy.IPlugin.IPlugin):
         return utilities.verify(KoboDeluxe.identifying_files, path)
 
     @staticmethod
-    def read_profile(path):
-        """Reads profile found in path."""
+    def read_profiles(path):
+        """Reads all profiles found in path."""
         profiles = [os.path.join(path, "scores", pfile) for pfile in os.listdir(os.path.join(path, "scores"))]
         answer = []
         for pfile in profiles:
             with open(pfile, "rb") as profile:
-                data = profile.read(KoboDeluxe.start_reader.struct.size)
-                start = KoboDeluxe.start_reader.unpack(data)
-                data = profile.read(KoboDeluxe.prof_reader.struct.size)
-                prof = KoboDeluxe.prof_reader.unpack(data)
-                scores = []
-                for data in iter(lambda: profile.read(KoboDeluxe.hiscore_reader.struct.size), b""):
-                    scores.append(KoboDeluxe.hiscore_reader.unpack(data))
-                answer.append((start, prof, scores))
+                profile_reader = KoboDeluxe.get_profile_reader(profile)
+                answer.append(profile_reader.unpack(profile.read()))
         return answer

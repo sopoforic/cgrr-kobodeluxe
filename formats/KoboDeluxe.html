@@ -46,23 +46,23 @@
     </tr>
 </table>
 
-{% for (start, prof, scores) in profiles %}
-<h1>Profile: {{ start.name }}</h1>
+{% for p in profiles %}
+<h1>Profile: {{ p.start_chunk.name }}</h1>
 
 <h2>Start</h2>
 
 <table>
     <tr>
         <th>Name</th>
-        <td>{{ start.name }}</td>
+        <td>{{ p.start_chunk.name }}</td>
     </tr>
     <tr>
         <th>Best Score</th>
-        <td>{{ start.best_score }}</td>
+        <td>{{ p.start_chunk.best_score }}</td>
     </tr>
     <tr>
         <th>Last Scene</th>
-        <td>{{ start.last_scene }}</td>
+        <td>{{ p.start_chunk.last_scene }}</td>
     </tr>
 </table>
 
@@ -71,22 +71,22 @@
 <table>
     <tr>
         <th>Version</th>
-        <td>{{ prof.version }}</td>
+        <td>{{ p.prof_chunk.version }}</td>
     </tr>
     <tr>
         <th>Skill</th>
-        <td>{{ prof.skill }}</td>
+        <td>{{ p.prof_chunk.skill }}</td>
     </tr>
     <tr>
         <th>Handicap</th>
-        <td>{{ prof.handicap }}</td>
+        <td>{{ p.prof_chunk.handicap }}</td>
     </tr>
     <tr>
         <th>Color 1</th>
-        <td>{{ prof.color1 }}</td>
+        <td>{{ p.prof_chunk.color1 }}</td>
     </tr>
         <th>Color 2</th>
-        <td>{{ prof.color2 }}</td>
+        <td>{{ p.prof_chunk.color2 }}</td>
     </tr>
 </table>
 
@@ -107,7 +107,7 @@
         <th>Saves</th>
         <th>Loads</th>
     </tr>
-    {% for score in scores %}
+    {% for score in p.score_chunk %}
     <tr>
         <td>{{ score.start_date }}</td>
         <td>{{ score.end_date }}</td>
