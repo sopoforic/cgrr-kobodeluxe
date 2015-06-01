@@ -19,12 +19,8 @@
 import logging
 import os
 
-from jinja2 import Environment, FileSystemLoader
-
 import cgrr
 from cgrr import File, FileReader
-
-env = Environment(loader=FileSystemLoader('.'))
 
 key = "kobo_deluxe_a"
 title = "Kobo Deluxe"
@@ -129,7 +125,10 @@ hiscore_reader = FileReader(
 
 def export(path, format="html"):
     """Export a report of  everything this class supports."""
-    global env
+    from jinja2 import Environment, FileSystemLoader
+
+    env = Environment(loader=FileSystemLoader('.'))
+
     if format == "html":
         template = env.get_template('kobodeluxe.html')
     profiles = read_profiles(path)
