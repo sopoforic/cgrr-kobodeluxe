@@ -22,8 +22,8 @@ class Test_kobo_deluxe_a(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        import KoboDeluxe
-        cls.KoboDeluxe = KoboDeluxe
+        import kobodeluxe
+        cls.kobodeluxe = kobodeluxe
 
     def setUp(self):
         self.original_profile = None
@@ -36,13 +36,13 @@ class Test_kobo_deluxe_a(unittest.TestCase):
         """Verify that profile_reader roundtrips data correctly."""
         profile = None
         with open(self.test_profile_path, "rb") as pfile:
-            profile_reader = self.KoboDeluxe.get_profile_reader(pfile)
+            profile_reader = self.kobodeluxe.get_profile_reader(pfile)
             profile = profile_reader.unpack(pfile.read())
-        packed = self.KoboDeluxe.write_profile(profile)
+        packed = self.kobodeluxe.write_profile(profile)
 
         self.assertEqual(packed, self.original_profile,
             "roundtripped data differs from original")
 
     def test_export_basic(self):
         """Verify that exporting doesn't die."""
-        self.KoboDeluxe.export(self.test_files_path)
+        self.kobodeluxe.export(self.test_files_path)

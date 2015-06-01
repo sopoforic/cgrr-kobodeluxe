@@ -131,7 +131,7 @@ def export(path, format="html"):
     """Export a report of  everything this class supports."""
     global env
     if format == "html":
-        template = env.get_template('KoboDeluxe.html')
+        template = env.get_template('kobodeluxe.html')
     profiles = read_profiles(path)
     text = template.render({
         "key" : key,
