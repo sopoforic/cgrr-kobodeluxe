@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with CGRR.  If not, see <http://www.gnu.org/licenses/>.
 """Parses Kobo Deluxe data."""
-import logging
 import os
 
 import cgrr
